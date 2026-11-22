@@ -18,3 +18,29 @@ body {
   max-width: 100%;
   height: auto;
 }
+#controls {
+  position:fixed;
+  bottom:20px;
+  left:0;
+  width:100%;
+  padding:0 24px;
+  display:flex;
+  justify-content:space-between;
+  pointer-events: none;
+}
+.movement{
+  display:flex;
+  gap:16px;
+}
+.movement_button{
+width:64px;
+height:64px;
+  font-size:24px;
+  color:white;
+  background-color:rgba(255, 255,255,0.2);
+  border:2px solid rgba(255,255,255,0.5);
+  border-radius:12px;
+  pointer-events:auto;
+  touch-action:none;
+  user-select:none;
+}
