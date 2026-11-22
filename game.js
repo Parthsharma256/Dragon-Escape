@@ -1,4 +1,4 @@
-const canvas= document.getElementById("gameCanva");
+const canvas= document.getElementById("gameCanvas");
 const ctx= canvas.getContext("2d");
 
 const floorY= 360;
@@ -21,14 +21,14 @@ function update(){
 }
 
 function draw (){
-  ctx.fillstyle= "#444";
-  ctx.fillRect(0,floorY,canvas.width,canva.height-floorY);
+  ctx.fillStyle= "#444";
+  ctx.fillRect(0,floorY,canvas.width,canvas.height-floorY);
 
   ctx.beginPath();
-  ctx.arc(ballX,ballY,ballRadius,0,Math.Pi*2);
-ctx.fillstyle="deepskyblue";
+  ctx.arc(ballX,ballY,ballRadius,0,Math.PI*2);
+  ctx.fillStyle="deepskyblue";
   ctx.fill();
-  ctx.closrPath();
+  ctx.closePath();
 }
 
 function gameLoop(){
