@@ -38,20 +38,20 @@ function tryjump(){
 jump.addEventListener("pointerdown",tryjump);
 
 window.addEventListener("keydown",(e)=>{
-  if (e.code==="ArrowLeft") left=true;
-  if (e.code==="ArrowRight") right=true;
+  if (e.code==="ArrowLeft") moveleft=true;
+  if (e.code==="ArrowRight") moveright=true;
   if (e.code==="Space" || e.code==="ArrowUp") tryjump();
 });
 window.addEventListener("keyup",(e)=>{
-  if (e.code==="ArrowLeft") left=false;
-  if (e.code==="ArrowRight") right=false;
+  if (e.code==="ArrowLeft") moveleft=false;
+  if (e.code==="ArrowRight") moveright=false;
 });
 
 function update(){
-  if (left) {
+  if (moveleft) {
     ballX -=movespeed;
   }
-  if (right){
+  if (moveright){
     ballX+=movespeed;
   }
   if (ballX-ballRadius<0){
