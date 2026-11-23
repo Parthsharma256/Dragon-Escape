@@ -171,14 +171,14 @@ if (isgameover) return;
 
     if (
       ballX+ballRadius-10>dragon.x &&
-    ballX-ballRadius+10<dragon.x + dragon+width &&
+    ballX-ballRadius+10<dragon.x + dragon.width &&
       ballY+ballRadius-10>dragon.y &&
       ballY-ballRadius+10<dragon.y+dragon.height
     ) {isgameover=true;}
     firetimer++;
     if (firetimer>=110) {
       
-    }firetimer=0;
+    firetimer=0;
     fireballs.push({
       x:dragon.x+dragon.width,
       y:dragon.y+dragon.height/2,
@@ -186,17 +186,19 @@ if (isgameover) return;
       speedX: 7.5
     });
   }
-}
-for (let i=fireball.length-1; i>=0;i--){
+    
+for (let i=fireballs.length-1; i>=0;i--){
   const f=fireballs[i];
   f.x+=f.speedX;
 
-  const f=Math.hypot(ballX-f.x,ballY-f.y);
+  const fdist=Math.hypot(ballX-f.x,ballY-f.y);
   if (fdist<ballRadius+f.radius-3){
   isgameover=true;
   }
   if (f.x-cameraX>canvas.width+50){
     fireballs.splice(i,1);
+  }
+}
   }
 }
 
@@ -259,19 +261,19 @@ const tilestart=-(cameraX%80);
   ctx.fill();
   //dragon body
   ctx.fillStyle="#b91c1c";
-  ctx.fillRect(dx,dragon.y,dragon.widtg,dragon.height);
+  ctx.fillRect(dx,dragon.y,dragon.width,dragon.height);
   //eyes
   ctx.fillStyle="#facc15";
-  ctx.fillRect(dx+dragon.widght-28,dragon.y+18,12,12);
+  ctx.fillRect(dx+dragon.width-28,dragon.y+18,12,12);
   //fireball
-  for (let i=0:i<fireballs.length;i,++){
+  for (let i=0;i<fireballs.length;i++){
     const f=fireballs[i];
     const fx=f.x-cameraX;
     ctx.beginPath();
-    ctx.arc(fx,f.y,f.radius,0,Matg.PI*2);
+    ctx.arc(fx,f.y,f.radius,0,Math.PI*2);
     ctx.fillStyle="#f97316";
     ctx.fill();
-    ctx.closerPath();
+    ctx.closePath();
 
     ctx.beginPath();
     ctx.arc(fx,f.y,f.radius*0.5,0,Math.PI*2)
