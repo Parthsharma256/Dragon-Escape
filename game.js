@@ -93,7 +93,7 @@ function draw (){
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
   ctx.fillStyle="#23283d";
-  const pillarStart=-(camera%180);
+  const pillarStart=-(cameraX%180);
   for (let x=pillarStart;x<canvas.width; x+=180){
     ctx.fillRect(x,ceilingY,45,floorY-ceilingY);
   }
@@ -101,15 +101,16 @@ function draw (){
   
   //ceiling
   ctx.fillStyle= "#4e3b31";
-  ctx.fillRect(0,canvas.width,ceilingY);
+  ctx.fillRect(0,0,canvas.width,ceilingY);
   //floor
   ctx.fillStyle="#4e3b31";
-  filoRect(0,floorY,canvas.width,canvas.height-floorY);
-  //stones
+  ctx.fillRect(0,floorY,canvas.width,canvas.height-floorY);
+  //tile
 const tilestart=-(cameraX%80);
  ctx.fillStyle="#8a6a55";
-  for (let x=tilestart;x<canvas.width;x+=80)
+  for (let x=tilestart;x<canvas.width;x+=80){
     ctx.fillRect(x,floorY,50,10);
+  }
   //ball 
   const screenBallX=ballX-cameraX;
   ctx.beginPath();
