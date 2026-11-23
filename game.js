@@ -175,6 +175,30 @@ const tilestart=-(cameraX%80);
   for (let x=tilestart;x<canvas.width;x+=80){
     ctx.fillRect(x,floorY,50,10);
   }
+  //spikes
+  ctx.fillStyle="#ef4444";
+  for (let i=0; i<spikes.length;i++){
+    const s=spikes[i];
+    const sx=s.x-camera;
+    if (sx+s.width>0&&sx<canvas.width){
+      ctx.beginPath();
+      ctx.moveTo(sx,floorY);
+      ctx.lineTo(sx+s.width/2,flooeY-s.height);
+      ctx.lineTo(sx+s.width,floorY);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+  //falling rocks
+  ctx.fillStyle="#9ca3af";
+  for(let i=0; i<rocks.length;i++){
+    const r=rocks[i];
+    const rx=r.x-cameraX;
+    ctx.beginPath();
+    ctx.arc(rx,r.y,r.radius,0,Math.PI*2);
+    ctx.fill();
+    ctx.closePath();
+  }
   //ball 
   const screenBallX=ballX-cameraX;
   ctx.beginPath();
@@ -182,6 +206,17 @@ const tilestart=-(cameraX%80);
   ctx.fillStyle="deepskyblue";
   ctx.fill();
   ctx.closePath();
+  if (isgameover){
+    ctx.fillStyle="rgba(0,0,0,0.65)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#ef4444";
+    ctx.font="bold 44px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("GAME OVER",canvas.width/2,canvas.height/2-10);
+    ctx.fillStyle="#ffffff";
+    ctx.font="20px sabs-serif";
+    ctx.fillText("Tap screen or ■ to retry",canvas.width/2,canvas.height/2+30);
+  }
 }
 
 function gameLoop(){
