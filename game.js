@@ -12,22 +12,22 @@ const left=document.getElementById("left");
 const right=document.getElementById("right");
 const jump=document.getElementById("jump");
 
-const moveSpeed= 5;
+const movespeed= 5;
 const jumpstrenght= -12;
 
 let moveleft=false;
 let moveright=false;
 let isOnGround=false;
 
-left.addEventListener("pointerdown",()=>{left=true;})
-left.addEventListener("pointerup",()=>{left=false});
-left.addEventListener("pointerleave",()=>{left=false});
-left.addEventListener("pointercancel",()=>{left=false});
+left.addEventListener("pointerdown",()=>{moveleft=true;})
+left.addEventListener("pointerup",()=>{moveleft=false});
+left.addEventListener("pointerleave",()=>{moveleft=false});
+left.addEventListener("pointercancel",()=>{moveleft=false});
 
-right.addEventListener("pointerdown",()=>{right=true});
-right.addEventListener("pointerup",()=>{right=false});
-right.addEventListener("pointerleave",()=>{right=false});
-right.addEventListener("pointercancel",()=>{right=false});
+right.addEventListener("pointerdown",()=>{moveright=true});
+right.addEventListener("pointerup",()=>{moveright=false});
+right.addEventListener("pointerleave",()=>{moveright=false});
+right.addEventListener("pointercancel",()=>{moveright=false});
 
 function tryjump(){
   if (isOnGround){
@@ -57,16 +57,16 @@ function update(){
   if (ballX-ballRadius<0){
     ballX=ballRadius;
   }
-  if (ballX+ballRadius>canvaswidth){
+  if (ballX+ballRadius>canvas.width){
     ballX=canvas.width-ballRadius;
   }
   velocityY += gravity;
-  isOnGround=true;
   ballY += velocityY;
 
   if (ballY+ballRadius > floorY){
     ballY =floorY-ballRadius;
     velocityY= 0;
+    isOnGround=true;
   }
 }
 
