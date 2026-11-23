@@ -2,6 +2,11 @@ const canvas= document.getElementById("gameCanvas");
 const ctx= canvas.getContext("2d");
 
 const floorY= 360;
+const ceilingY=60;
+const cavelength=5000;
+let gamephase="chase";
+let cameraX=0;
+const bossArenaStart=cavelength-canvas.width;
 
 let ballX= 100;
 let ballY= 100;
@@ -54,11 +59,20 @@ function update(){
   if (moveright){
     ballX+=movespeed;
   }
-  if (ballX-ballRadius<0){
-    ballX=ballRadius;
+  const minX=gamephase==="boss" ? bossArenaStart+ballRadius : ballRadius;
+  if (ballX<minX){
+    ballX=minX;
   }
-  if (ballX+ballRadius>canvas.width){
-    ballX=canvas.width-ballRadius;
+  if (ballX+ballRadius>cavelength){
+    ballX=cavelength-ballRadius;
+  }
+  if (gamephase==="chase"){
+    cameraX=ballX-250;
+    if (cameraX<0) cameraX=0;
+    if (cameraX>=bossArenaStart){
+      cameraX=bossArenaStart;
+      gamephase="boss";
+    }
   }
   velocityY += gravity;
   ballY += velocityY;
@@ -68,14 +82,38 @@ function update(){
     velocityY= 0;
     isOnGround=true;
   }
+  if (ballY-ballRadius<ceilingY){
+    ballY=ceilingY+ballRadius;
+    velocityY=0;
+  }
 }
 
 function draw (){
-  ctx.fillStyle= "#444";
-  ctx.fillRect(0,floorY,canvas.width,canvas.height-floorY);
+  ctx.fillStyle="#161925";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
+  ctx.fillStyle="#23283d";
+  const pillarStart=-(camera%180);
+  for (let x=pillarStart;x<canvas.width; x+=180){
+    ctx.fillRect(x,ceilingY,45,floorY-ceilingY);
+  }
+
+  
+  //ceiling
+  ctx.fillStyle= "#4e3b31";
+  ctx.fillRect(0,canvas.width,ceilingY);
+  //floor
+  ctx.fillStyle="#4e3b31";
+  filoRect(0,floorY,canvas.width,canvas.height-floorY);
+  //stones
+const tilestart=-(cameraX%80);
+ ctx.fillStyle="#8a6a55";
+  for (let x=tilestart;x<canvas.width;x+=80)
+    ctx.fillRect(x,floorY,50,10);
+  //ball 
+  const screenBallX=ballX-cameraX;
   ctx.beginPath();
-  ctx.arc(ballX,ballY,ballRadius,0,Math.PI*2);
+  ctx.arc(screenBallX,ballY,ballRadius,0,Math.PI*2);
   ctx.fillStyle="deepskyblue";
   ctx.fill();
   ctx.closePath();
@@ -89,6 +127,3 @@ function gameLoop(){
 }
 
 gameLoop();
-
-
-
