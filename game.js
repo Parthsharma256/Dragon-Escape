@@ -27,6 +27,15 @@ let isgameover=false;
 let spikes=[];
 let rocks=[];
 let rocktimer=0;
+let dragon={
+  x:-120,
+  y:220,
+  width:110,
+  height:85,
+  speed:3.6
+};
+let fireballs=[];
+let firetimer=0;
 function createspike (){
   spikes=[];
   let x=550;
@@ -45,6 +54,10 @@ function resetgame() {
   isgameover=false;
   rocks=[];
   rocktimer=0
+  dragon.x=-120;
+  dragon.y=220;
+  fireballs=[];
+  firetimer=0;
   createspike ();
 }
 createspike();
@@ -149,6 +162,42 @@ if (isgameover) return;
       rocks.splice(i,1);
     }
   }
+  if (gamephase==="chase"){
+    dragon.x+=dragon.speed;
+    if (dragon.x<ballX-420){
+      dragon.x=ballX-420;
+    }
+    dragon.y+=(ballY-(dragon.y+dragon.height/2))*0.04;
+
+    if (
+      ballX+ballRadius-10>dragon.x &&
+    ballX-ballRadius+10<dragon.x + dragon+width &&
+      ballY+ballRadius-10>dragon.y &&
+      ballY-ballRadius+10<dragon.y+dragon.height
+    ) {isgameover=true;}
+    firetimer++;
+    if (firetimer>=110) {
+      
+    }firetimer=0;
+    fireballs.push({
+      x:dragon.x+dragon.width,
+      y:dragon.y+dragon.height/2,
+      radius:12,
+      speedX: 7.5
+    });
+  }
+}
+for (let i=fireball.length-1; i>=0;i--){
+  const f=fireballs[i];
+  f.x+=f.speedX;
+
+  const f=Math.hypot(ballX-f.x,ballY-f.y);
+  if (fdist<ballRadius+f.radius-3){
+  isgameover=true;
+  }
+  if (f.x-cameraX>canvas.width+50){
+    fireballs.splice(i,1);
+  }
 }
 
 function draw (){
@@ -195,6 +244,38 @@ const tilestart=-(cameraX%80);
     const rx=r.x-cameraX;
     ctx.beginPath();
     ctx.arc(rx,r.y,r.radius,0,Math.PI*2);
+    ctx.fill();
+    ctx.closePath();
+  }
+  //dragon
+  const dx=dragon.x-cameraX;
+  //dragon wing
+  ctx.fillStyle="#7f1d1d";
+  ctx.beginPath();
+  ctx.moveTo(dx+20,dragon.y+20);
+  ctx.lineTo(dx-25,dragon.y-25);
+  ctx.lineTo(dx+60,dragon.y+10);
+  ctx.closePath();
+  ctx.fill();
+  //dragon body
+  ctx.fillStyle="#b91c1c";
+  ctx.fillRect(dx,dragon.y,dragon.widtg,dragon.height);
+  //eyes
+  ctx.fillStyle="#facc15";
+  ctx.fillRect(dx+dragon.widght-28,dragon.y+18,12,12);
+  //fireball
+  for (let i=0:i<fireballs.length;i,++){
+    const f=fireballs[i];
+    const fx=f.x-cameraX;
+    ctx.beginPath();
+    ctx.arc(fx,f.y,f.radius,0,Matg.PI*2);
+    ctx.fillStyle="#f97316";
+    ctx.fill();
+    ctx.closerPath();
+
+    ctx.beginPath();
+    ctx.arc(fx,f.y,f.radius*0.5,0,Math.PI*2)
+    ctx.fillStyle="#fde047";
     ctx.fill();
     ctx.closePath();
   }
