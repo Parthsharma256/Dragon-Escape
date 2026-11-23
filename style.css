@@ -12,7 +12,7 @@ body {
   height:100vh;
   overflow:hidden;
 }
-#gamecanvas {
+#gameCanvas {
   background-color: #222;
   border: 2px solid #555;
   max-width: 100%;

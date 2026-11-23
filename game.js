@@ -8,10 +8,60 @@ let ballY= 100;
 const ballRadius= 20;
 let velocityY= 0;
 const gravity= 0.5;
+const left=document.getElementById("left");
+const right=document.getElementById("right");
+const jump=document.getElementById("jump");
 
+const moveSpeed= 5;
+const jumpstrenght= -12;
+
+let moveleft=false;
+let moveright=false;
+let isOnGround=false;
+
+left.addEventListener("pointerdown",()=>{left=true;})
+left.addEventListener("pointerup",()=>{left=false});
+left.addEventListener("pointerleave",()=>{left=false});
+left.addEventListener("pointercancel",()=>{left=false});
+
+right.addEventListener("pointerdown",()=>{right=true});
+right.addEventListener("pointerup",()=>{right=false});
+right.addEventListener("pointerleave",()=>{right=false});
+right.addEventListener("pointercancel",()=>{right=false});
+
+function tryjump(){
+  if (isOnGround){
+    velocityY=jumpstrenght;
+    isOnGround=false;
+  }
+}
+jump.addEventListener("pointerdown",tryjump);
+
+window.addEventListener("keydown",(e)=>{
+  if (e.code==="ArrowLeft") left=true;
+  if (e.code==="ArrowRight") right=true;
+  if (e.code==="Space" || e.code==="ArrowUp") tryjump();
+});
+window.addEventListener("keyup",(e)=>{
+  if (e.code==="ArrowLeft") left=false;
+  if (e.code==="ArrowRight") right=false;
+});
 
 function update(){
+  if (left) {
+    ballX -=movespeed;
+  }
+  if (right){
+    ballX+=movespeed;
+  }
+  if (ballX-ballRadius<0){
+    ballX=ballRadius;
+  }
+  if (ballX+ballRadius>canvaswidth){
+    ballX=canvas.width-ballRadius;
+  }
   velocityY += gravity;
+  isOnGround=true;
   ballY += velocityY;
 
   if (ballY+ballRadius > floorY){
