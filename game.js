@@ -23,6 +23,31 @@ const jumpstrenght= -12;
 let moveleft=false;
 let moveright=false;
 let isOnGround=false;
+let isgameover=false;
+let spikes=[];
+let rocks=[];
+let rocktimer=0;
+function createspike (){
+  spikes=[];
+  let x=550;
+  while (x<bossArenaStart-200){
+    spikes.push({x:x,width:34,height:28});
+    x+=260+Math.random()*180;
+  }
+}
+function resetgame() {
+  ballX=100;
+  ballY=100;
+  velocityY=0;
+  velocityX=0;
+  cameraX=0;
+  gamephase="chase";
+  isgameover=false;
+  rocks=[];
+  rocktime=0
+  createspike ();
+}
+createspike();
 
 left.addEventListener("pointerdown",()=>{moveleft=true;})
 left.addEventListener("pointerup",()=>{moveleft=false});
@@ -35,13 +60,19 @@ right.addEventListener("pointerleave",()=>{moveright=false});
 right.addEventListener("pointercancel",()=>{moveright=false});
 
 function tryjump(){
+  if (isgameover){
+    resetgame();
+    return;
+  }
   if (isOnGround){
     velocityY=jumpstrenght;
     isOnGround=false;
   }
 }
 jump.addEventListener("pointerdown",tryjump);
-
+canvas.addEventListener("pointerdown",()=>{
+  if (isgameover)resetgame();
+});
 window.addEventListener("keydown",(e)=>{
   if (e.code==="ArrowLeft") moveleft=true;
   if (e.code==="ArrowRight") moveright=true;
@@ -53,6 +84,7 @@ window.addEventListener("keyup",(e)=>{
 });
 
 function update(){
+  if (isgameover) return;
   if (moveleft) {
     ballX -=movespeed;
   }
@@ -85,6 +117,38 @@ function update(){
   if (ballY-ballRadius<ceilingY){
     ballY=ceilingY+ballRadius;
     velocityY=0;
+  }
+  for (let i=0; i<spikes.length; i++){
+    const s=spikes[i];
+    if(
+      ballX+ballRadius-6>s.x &&
+      ballX-ballRadius+6<s.x+s.width &&
+      ballY+ballRadius>floorY-heighr+6)
+    {isgameover=true;
+    } 
+  }
+  if (gamephase==="chase"){
+    rocktimer++;
+    if(rocktimer>=90){
+      rocktimer=0;
+      rocks.push({
+        x:ballX+180+Math.random()*280,
+        y:ceilingY,
+        radius:14,
+        speedY:3.5
+      });
+    }
+  }
+  for (let i=rocks.length-1;i>=0;i--){
+    const r=rocks[i];
+    r.y+=r.speedY;
+    const dist = Math.hypot(ballX-r.x,ballY-r.y);
+    if(dist<ballRadius+r.radius-4){
+      isgameover=true;
+    }
+    if (r.y-r.radius>floorY) {
+      rocks.splice(i,1);
+    }
   }
 }
 
