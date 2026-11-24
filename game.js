@@ -37,6 +37,13 @@ let dragon={
 let fireballs=[];
 let firetimer=0;
 let dragondelay=30;
+let bosshp=10;
+let win=false;
+let orbs=[];
+let bosstimer=0;
+let orbtimer=0;
+let dragonflash=0;
+
 function createspike (){
   spikes=[];
   let x=550;
@@ -60,6 +67,13 @@ function resetgame() {
   fireballs=[];
   firetimer=0;
   dragondelay=30;
+  bosshp=10;
+  win=false;
+  orbs=[];
+  bosstimer=0;
+  orbtime=0;
+  dragonflash=0;
+  
   createspike ();
 }
 createspike();
@@ -75,7 +89,7 @@ right.addEventListener("pointerleave",()=>{moveright=false});
 right.addEventListener("pointercancel",()=>{moveright=false});
 
 function tryjump(){
-  if (isgameover){
+  if (isgameover||win){
     resetgame();
     return;
   }
@@ -86,7 +100,7 @@ function tryjump(){
 }
 jump.addEventListener("pointerdown",tryjump);
 canvas.addEventListener("pointerdown",()=>{
-  if (isgameover)resetgame();
+  if (isgameover||win)resetgame();
 });
 const fsbutton=document.getElementById("fsbutton");
 fsbutton.addEventListener("pointerdown",()=>{
@@ -107,7 +121,7 @@ window.addEventListener("keyup",(e)=>{
   if (e.code==="ArrowRight") moveright=false;
 });
 function update(){
-if (isgameover) return;
+if (isgameover||win) return;
   if (moveleft) {
     ballX -=movespeed;
   }
@@ -127,6 +141,11 @@ if (isgameover) return;
     if (cameraX>=bossArenaStart){
       cameraX=bossArenaStart;
       gamephase="boss";
+      dragon.x=cavelength-150;
+      dragon.y=180;
+      firaballs=[];
+      rocks=[];
+      firetimer=0;
     }
   }
   velocityY += gravity;
@@ -215,6 +234,78 @@ for (let i=fireballs.length-1; i>=0;i--){
   }
 }
   }
+  if(gamephase==="boss")
+    bosstimer++;
+  if (dragonflash>0)dragonflash--;
+  dragon.y=180+Math.sin(bosstimer*0.04)*70;
+
+  if (
+    ballX+ballRadius-10>dragon.x&&
+    ballX-ballRadius+10<dragon.x +dragon.width &&
+    ballY+ballRadius-10>dragon.y&&
+    ballY-ballaRadius+10<dragon.y+dragon.height
+    ){
+    isgameover=true;
+    }
+    firetimer++;
+  if(firetimer>=95){
+    firetimer=0;
+    fireballs.push({
+      x: dragon.x,
+      y: dragon.y+dragon.height/2,
+      radius:12,
+      speedX:-6.5
+    });
+  }
+  orbtimer=0;
+  orbs.push({
+    x:bossArenaStart+120+Math.random()*360,
+    y:ceilingY
+    radius:16,
+    speedX:0.
+  speedY:2.6,
+    deflected:false
+  })
+for (let i=fireballs.length-1;i>=0;i--){
+  cost f=fireballs[i];
+  f.x+=f.speedX;
+  if (Math.hypot(ballX-f.x,ballY-f.y)<ballRadius+f.radius-3){
+    isgamover=true;
+  }
+  if(f.x<bossArenaStart-50){
+    fireballs.splice(i,1);
+  }
+}
+for(let i=orbs.length-1; i>=0;i--){
+  const o=orbs[i];
+  o.x+=o.speedX;
+  o.y+=o.speedY;
+
+  if(!o.deflacted&&Math.hypot(ballX-o.x,ballY-o.y)<ballRadius+o.rwdius+4){
+    o.deflected=true;
+    o.speedX=9.5;
+    o.speedY=(dragon.y+dragon.heigr/2-o.y)*0.03;
+    velocityY=-8;
+  }
+  if (
+    o.deflected&&
+    o.x+o.radius>dragon.x&&
+    o.x-o.radius<dragon.x+dragon.width&&
+    o.y+.radius>dragon.y&&
+    o.y-o.radius<dragon.y+dragon.height
+  ){
+    bosshp--;
+    dragonflash=8;
+    orbs.splice(i,1);
+    if (bosshp<=0){
+      win=true;
+    }
+    continue;
+  }
+  if (o.y-o.radius>floorY||o.x>cavelength+50){
+    orbs.splice(i,1);
+  }
+}
 }
 
 function draw (){
@@ -275,7 +366,7 @@ const tilestart=-(cameraX%80);
   ctx.closePath();
   ctx.fill();
   //dragon body
-  ctx.fillStyle="#b91c1c";
+  ctx.fillStyle=dragonflash>0?"#ffffff":"#b91c1c";
   ctx.fillRect(dx,dragon.y,dragon.width,dragon.height);
   //eyes
   ctx.fillStyle="#facc15";
@@ -295,6 +386,14 @@ const tilestart=-(cameraX%80);
     ctx.fillStyle="#fde047";
     ctx.fill();
     ctx.closePath();
+  }
+  //orbs
+  for (let i=0; i<orbs.length; i++){
+    const o=orbs[i];
+    const ox=o.x-cameraX;
+    ctx.beginPath();
+    ctx.arc(ox,o.y,o.radius,0,Math.PI*2);
+    
   }
   //ball 
   const screenBallX=ballX-cameraX;
