@@ -88,6 +88,15 @@ jump.addEventListener("pointerdown",tryjump);
 canvas.addEventListener("pointerdown",()=>{
   if (isgameover)resetgame();
 });
+const fsbutton=document.getElementById("fsbutton");
+fsbutton.addEventListener("pointerdown",()=>{
+  if (!document.fullscreenElement){
+    document.documentElement.requestFullscreen();
+  }
+  else{
+    document.exitFullscreen();
+  }
+});
 window.addEventListener("keydown",(e)=>{
   if (e.code==="ArrowLeft") moveleft=true;
   if (e.code==="ArrowRight") moveright=true;
