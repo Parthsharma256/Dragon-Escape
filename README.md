@@ -3,7 +3,7 @@ Hi there runner!!
 This game is about a dragon trying to eat a ball , so the ball tries to escape into a cave ... but guess what? it was the dragon's nest and the cave is falling tooo!!!
 This is actually my first game that i ever built and i built it o my mobile phone using acode (dont have a laptop T_T) ,WHILE learning javascript, so if you have any suggestions or find any bug please let me know!
 And this is just the first version i plan to complete the game using pixel arts and few other stuff!!!
-**Play on :**
+**Play on :** https://parthsharma256.itch.io/dragon-escape
 
 ## How to play
 The game is split into 2 phases
