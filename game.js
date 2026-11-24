@@ -24,6 +24,7 @@ let moveleft=false;
 let moveright=false;
 let isOnGround=false;
 let isgameover=false;
+let gamestarted=false;
 let spikes=[];
 let rocks=[];
 let rocktimer=0;
@@ -89,6 +90,10 @@ right.addEventListener("pointerleave",()=>{moveright=false});
 right.addEventListener("pointercancel",()=>{moveright=false});
 
 function tryjump(){
+  if(!gamestarted){
+    gamestarted=true;
+    return;
+  }
   if (isgameover||win){
     resetgame();
     return;
@@ -100,6 +105,10 @@ function tryjump(){
 }
 jump.addEventListener("pointerdown",tryjump);
 canvas.addEventListener("pointerdown",()=>{
+  if(!gamestarted){
+    gamestarted=true;
+    return;
+  }
   if (isgameover||win)resetgame();
 });
 const fsbutton=document.getElementById("fsbutton");
@@ -121,7 +130,7 @@ window.addEventListener("keyup",(e)=>{
   if (e.code==="ArrowRight") moveright=false;
 });
 function update(){
-if (isgameover||win) return;
+if (!gamestarted||isgameover||win) return;
   if (moveleft) {
     ballX -=movespeed;
   }
@@ -411,6 +420,17 @@ const tilestart=-(cameraX%80);
   ctx.fillStyle="deepskyblue";
   ctx.fill();
   ctx.closePath();
+  if(!gamestarted){
+    ctx.fillStyle="rgba(0,0,0,0.7)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#f97316";
+    ctx.font="bold 46px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("DRAGON ESCAPE",canvas.width/2,canvas.height/2-20);
+    ctx.fillStyle="#ffffff";
+    ctx.font="20px sans-serif";
+    ctx.fillText("Tap the screen or ■ to start",canvas.width/2,canvas.height/2+25);
+  }
   if (isgameover){
     ctx.fillStyle="rgba(0,0,0,0.65)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
