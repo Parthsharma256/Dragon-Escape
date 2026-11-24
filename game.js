@@ -36,6 +36,7 @@ let dragon={
 };
 let fireballs=[];
 let firetimer=0;
+let dragondelay=30;
 function createspike (){
   spikes=[];
   let x=550;
@@ -58,6 +59,7 @@ function resetgame() {
   dragon.y=220;
   fireballs=[];
   firetimer=0;
+  dragondelay=30;
   createspike ();
 }
 createspike();
@@ -163,12 +165,16 @@ if (isgameover) return;
     }
   }
   if (gamephase==="chase"){
+    if (dragondelay>0){
+      dragondelay--;
+    }
+    else{
     dragon.x+=dragon.speed;
     if (dragon.x<ballX-420){
       dragon.x=ballX-420;
     }
     dragon.y+=(ballY-(dragon.y+dragon.height/2))*0.04;
-
+    }
     if (
       ballX+ballRadius-10>dragon.x &&
     ballX-ballRadius+10<dragon.x + dragon.width &&
