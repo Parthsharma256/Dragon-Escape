@@ -71,7 +71,7 @@ function resetgame() {
   win=false;
   orbs=[];
   bosstimer=0;
-  orbtime=0;
+  orbtimer=0;
   dragonflash=0;
   
   createspike ();
@@ -143,7 +143,7 @@ if (isgameover||win) return;
       gamephase="boss";
       dragon.x=cavelength-150;
       dragon.y=180;
-      firaballs=[];
+      fireballs=[];
       rocks=[];
       firetimer=0;
     }
@@ -234,7 +234,7 @@ for (let i=fireballs.length-1; i>=0;i--){
   }
 }
   }
-  if(gamephase==="boss")
+  if(gamephase==="boss"){
     bosstimer++;
   if (dragonflash>0)dragonflash--;
   dragon.y=180+Math.sin(bosstimer*0.04)*70;
@@ -243,7 +243,7 @@ for (let i=fireballs.length-1; i>=0;i--){
     ballX+ballRadius-10>dragon.x&&
     ballX-ballRadius+10<dragon.x +dragon.width &&
     ballY+ballRadius-10>dragon.y&&
-    ballY-ballaRadius+10<dragon.y+dragon.height
+    ballY-ballRadius+10<dragon.y+dragon.height
     ){
     isgameover=true;
     }
@@ -257,17 +257,20 @@ for (let i=fireballs.length-1; i>=0;i--){
       speedX:-6.5
     });
   }
+    orbtimer++;
+    if (orbtimer>=130){
   orbtimer=0;
   orbs.push({
     x:bossArenaStart+120+Math.random()*360,
-    y:ceilingY
+    y:ceilingY,
     radius:16,
-    speedX:0.
+    speedX:0,
   speedY:2.6,
     deflected:false
   })
+    }
 for (let i=fireballs.length-1;i>=0;i--){
-  cost f=fireballs[i];
+  const f=fireballs[i];
   f.x+=f.speedX;
   if (Math.hypot(ballX-f.x,ballY-f.y)<ballRadius+f.radius-3){
     isgamover=true;
@@ -281,17 +284,17 @@ for(let i=orbs.length-1; i>=0;i--){
   o.x+=o.speedX;
   o.y+=o.speedY;
 
-  if(!o.deflacted&&Math.hypot(ballX-o.x,ballY-o.y)<ballRadius+o.rwdius+4){
+  if(!o.deflected&&Math.hypot(ballX-o.x,ballY-o.y)<ballRadius+o.radius+4){
     o.deflected=true;
     o.speedX=9.5;
-    o.speedY=(dragon.y+dragon.heigr/2-o.y)*0.03;
+    o.speedY=(dragon.y+dragon.height/2-o.y)*0.03;
     velocityY=-8;
   }
   if (
     o.deflected&&
     o.x+o.radius>dragon.x&&
     o.x-o.radius<dragon.x+dragon.width&&
-    o.y+.radius>dragon.y&&
+    o.y+o.radius>dragon.y&&
     o.y-o.radius<dragon.y+dragon.height
   ){
     bosshp--;
@@ -305,6 +308,7 @@ for(let i=orbs.length-1; i>=0;i--){
   if (o.y-o.radius>floorY||o.x>cavelength+50){
     orbs.splice(i,1);
   }
+}
 }
 }
 
@@ -393,7 +397,12 @@ const tilestart=-(cameraX%80);
     const ox=o.x-cameraX;
     ctx.beginPath();
     ctx.arc(ox,o.y,o.radius,0,Math.PI*2);
-    
+    ctx.fillStyle=o.deflected?"#22c55e":"#facc15";
+    ctx.fill();
+    ctx.strokeStyle="#ffffff";
+    ctx.lineWidth=2;
+    ctx.stroke();
+    ctx.closePath();
   }
   //ball 
   const screenBallX=ballX-cameraX;
@@ -412,6 +421,17 @@ const tilestart=-(cameraX%80);
     ctx.fillStyle="#ffffff";
     ctx.font="20px sans-serif";
     ctx.fillText("Tap screen or ■ to retry",canvas.width/2,canvas.height/2+30);
+  }
+  if(win){
+    ctx.fillStyle="rgba(0,0,0,0.7)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#22c55e";
+    ctx.font="bold 44px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("VICTORY!",canvas.width/2,canvas.height/2-10);
+    ctx.fillStyle="#ffffff";
+    ctx.font="20px sans-serif";
+    ctx.fillText("You defeated the dragon! Tap to play again",canvas.width/2,canvas.height/2+30);
   }
 }
 
