@@ -9,8 +9,8 @@ let cameraX=0;
 const bossArenaStart=cavelength-canvas.width;
 
 let ballX= 100;
-let ballY= 100;
 const ballRadius= 20;
+let ballY= floorY-ballRadius;
 let velocityY= 0;
 const gravity= 0.5;
 const left=document.getElementById("left");
@@ -46,7 +46,7 @@ function createspike (){
 }
 function resetgame() {
   ballX=100;
-  ballY=100;
+  ballY=floorY-ballRadius;
   velocityY=0;
   velocityX=0;
   cameraX=0;
