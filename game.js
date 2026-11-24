@@ -273,7 +273,7 @@ for (let i=fireballs.length-1;i>=0;i--){
   const f=fireballs[i];
   f.x+=f.speedX;
   if (Math.hypot(ballX-f.x,ballY-f.y)<ballRadius+f.radius-3){
-    isgamover=true;
+    isgameover=true;
   }
   if(f.x<bossArenaStart-50){
     fireballs.splice(i,1);
