@@ -44,6 +44,7 @@ let orbs=[];
 let bosstimer=0;
 let orbtimer=0;
 let dragonflash=0;
+let gametimer=0;
 
 function createspike (){
   spikes=[];
@@ -74,6 +75,7 @@ function resetgame() {
   bosstimer=0;
   orbtimer=0;
   dragonflash=0;
+  gametimer=0;
   
   createspike ();
 }
@@ -131,6 +133,7 @@ window.addEventListener("keyup",(e)=>{
 });
 function update(){
 if (!gamestarted||isgameover||win) return;
+  gametimer++;
   if (moveleft) {
     ballX -=movespeed;
   }
@@ -420,6 +423,44 @@ const tilestart=-(cameraX%80);
   ctx.fillStyle="deepskyblue";
   ctx.fill();
   ctx.closePath();
+  //progress bar 
+  const timeText=(gametimer/60).toFixed(1)+ "s";
+
+  if (gamephase==="chase"){
+    ctx.fillStyle="#38bdf8"
+    ctx.font="bold 20px sans-serif";
+    ctx.textAlign="left";
+    ctx.fillText("CHASE",24,36);
+
+    const progress=Math.min(ballX/(bossArenaStart+250),1);
+    ctx.filletStyle="#0f172a";
+    ctx.fillRect(105,20,420,20);
+    ctx.fillStyle="#38bdf8";
+    ctx.fillRect(105,20,420*progess,20);
+    ctx.strokeStyle="#94a3b8";
+    ctx.linewidth=2;
+    ctx,strokrRect(105,20,420,20);
+  }
+  else{
+    ctx.fillStyle="#ef4444";
+    ctx.font="bold 16px sans-serif";
+    ctx.textAlign="left";
+    ctx.fillText("BOSS HP",24,36);
+
+    for (let i=0;i<10;i++){
+      const bx=115+i*40;
+      ctx.fillStyle=i<bosshp ? "#ef4444":"1e293b";
+      ctx.fillRect(bx,18,32,24);
+      ctx.strokeStyle="#94a3b8";
+      ctx.lineWidth=2;
+      ctx.strokeRect(bx,18,32,24);
+    }
+    }
+  ctx.fillStyle="#facc15";
+  ctx.font="bold 18px monospace";
+  ctx.textAlign="right";
+  ctx.fillText(timeText,690,36);
+  }
   if(!gamestarted){
     ctx.fillStyle="rgba(0,0,0,0.7)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -453,7 +494,6 @@ const tilestart=-(cameraX%80);
     ctx.font="20px sans-serif";
     ctx.fillText("You defeated the dragon! Tap to play again",canvas.width/2,canvas.height/2+30);
   }
-}
 
 function gameLoop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
