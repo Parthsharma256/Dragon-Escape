@@ -370,30 +370,31 @@ for(let i=orbs.length-1; i>=0;i--){
 
 function draw (){
 ctx.imageSmoothingEnabled=false;
+  animtick++;
   //cave bg n walls
   ctx.fillStyle="#161426";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  if (assetbg.complete&&asset.width>0){
+  if (assetbg.complete&&assetbg.width>0){
     const bgstart= -((cameraX*0.25)%200);
     for (let x=bgstart;x<canvas.width;x+=200){
-      ctx.drawimage(assetbg,x,ceilingY,200,floorY-ceilingY);
+      ctx.drawImage(assetbg,x,ceilingY,200,floorY-ceilingY);
     }
   }
   if (assetwall.complete&&assetwall.width>0){
     const wallstart =-((cameraX*0.5)%533);
     for (let x=wallstart;x<canvas.width;x+=533){
-    ctx.drawimage(assetwall,x,ceilingY,533,floorY-ceilingY); 
+    ctx.drawImage(assetwall,x,ceilingY,533,floorY-ceilingY); 
     }
   }
   //cave ceiling n floor
   ctx.fillStyle="#1a1222";
   ctx.fillRect(0,0,canvas.width,ceilingY);
-  if (assettile.completr&&assettile.width>0){
-    for (let x=tilestart;x<canvas.widt;x+=240){
+  if (assettile.complete&&assettile.width>0){
     const tilestart= -(cameraX%240);
-    ctx.drawimage(assettile,144,80,192,20,x,ceilingY-8,240,25);
-    ctx.drawimage(assettile,144,144,192,32,x,floorY,240,40);
+    for (let x=tilestart;x<canvas.width;x+=240){
+    ctx.drawImage(assettile,144,80,192,20,x,ceilingY-8,240,25);
+    ctx.drawImage(assettile,144,144,192,32,x,floorY,240,40);
     }
   }
   // spikes
@@ -401,16 +402,16 @@ ctx.imageSmoothingEnabled=false;
     const s=spikes[i];
     const sx=s.x-cameraX;
     if (sx+s.width>0&&sx<canvas.width&&assetspike.complete){
-      ctx.drawimage(assetspike,sx-4,floorY-32,42,42);
+      ctx.drawImage(assetspike,sx-4,floorY-32,42,42);
     }
   }
   //rocks
-  const rokframe=Math.floor(animtick/6)%4;
+  const rframe=Math.floor(animtick/6)%4;
   for (let i=0; i<rocks.length;i++){
     const r=rocks[i];
     const rx=r.x-cameraX;
     if(assetrock.complete){
-      ctx.drawimage(assetrock,rframe*16,0,16,16,rx-r.radius-2,r.y-r.radius-2,r.radius*2+4,r.radius*2+4);
+      ctx.drawImage(assetrock,rframe*16,0,16,16,rx-r.radius-2,r.y-r.radius-2,r.radius*2+4,r.radius*2+4);
   }
   }
   //dragon
@@ -418,8 +419,8 @@ ctx.imageSmoothingEnabled=false;
   const dragonframe=Math.floor(animtick/8)%4;
   if (assetdragon.complete){
     if (dragonflash>0)ctx.globalAlpha=0.4;
-   ctx.drawimage(assetdragon,dragonframe*16,0,16,16,dx,dragon.y,dragon.width,dragon.height);
-    ctx.globapAlph=1;
+   ctx.drawImage(assetdragon,dragonframe*16,0,16,16,dx,dragon.y,dragon.width,dragon.height);
+    ctx.globalAlphaAlpha=1;
   }
   //fireball
   const fframe=Math.floor(animtick/5)%4;
@@ -430,20 +431,20 @@ ctx.imageSmoothingEnabled=false;
       ctx.save();
       ctx.translate(fx,f.y);
     if (f.speedX<0) ctx.scale(-1,1);
-    ctx.drawimage(assetfireball,fframe*40,0,40,18,-32,-16,64,32);
+    ctx.drawImage(assetfireball,fframe*40,0,40,18,-32,-16,64,32);
    ctx.restore(); 
   }
   }
   //orb
-  const oframe=Math.floor(animtrick/6)%5;
-  for(let i=0;i<orbs.lenght;i++){
+  const oframe=Math.floor(animtick/6)%5;
+  for(let i=0;i<orbs.length;i++){
     const o=orbs[i];
     const ox=o.x-cameraX;
     if (assetorb.complete){
-      ctx.drawimage(assetorb,oframe*16,0,16,16,ox-o.radius-2,o.y-o.radius-2,o.raius*2+4,o.radius*2+4);
+      ctx.drawImage(assetorb,oframe*16,0,16,16,ox-o.radius-2,o.y-o.radius-2,o.radius*2+4,o.radius*2+4);
     }
     if (o.deflected){
-      ctx.beginPatg();
+      ctx.beginPath();
      ctx.arc(ox,o.y,o.radius+3,0,Math.PI*2);
       ctx.strokeStyle="#22c55e";
       ctx.lineWidth=2;
@@ -453,9 +454,9 @@ ctx.imageSmoothingEnabled=false;
   }
   //ball
   const screenballx=ballX-cameraX;
-  const bframe=Math.floor(animtrick/5)%7;
+  const bframe=Math.floor(animtick/5)%7;
   if (assetball.complete){
-    ctx.drawimage(assetball,bframe*10,0,10,10,screenballx-ballRadius,ballY-ballRadius,ballRadius*2,ballRadius*2);
+    ctx.drawImage(assetball,bframe*10,0,10,10,screenballx-ballRadius,ballY-ballRadius,ballRadius*2,ballRadius*2);
   }
   //progress bar 
   const timeText=(gametimer/60).toFixed(1)+ "s";
