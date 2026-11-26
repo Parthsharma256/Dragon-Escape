@@ -31,8 +31,8 @@ let rocktimer=0;
 let dragon={
   x:-120,
   y:220,
-  width:110,
-  height:85,
+  width:160,
+  height:130,
   speed:3.6
 };
 let fireballs=[];
@@ -88,7 +88,7 @@ function createspike (){
   spikes=[];
   let x=550;
   while (x<bossArenaStart-200){
-    spikes.push({x:x,width:34,height:28});
+    spikes.push({x:x,width:50,height:34});
     x+=260+Math.random()*180;
   }
 }
@@ -228,8 +228,8 @@ if (!gamestarted||isgameover||win) return;
       rocks.push({
         x:ballX+180+Math.random()*280,
         y:ceilingY,
-        radius:14,
-        speedY:3.5
+        radius:30,
+        speedY:4
       });
     }
   }
@@ -402,7 +402,7 @@ ctx.imageSmoothingEnabled=false;
     const s=spikes[i];
     const sx=s.x-cameraX;
     if (sx+s.width>0&&sx<canvas.width&&assetspike.complete){
-      ctx.drawImage(assetspike,sx-4,floorY-32,42,42);
+      ctx.drawImage(assetspike,sx-6,floorY-52,100,100);
     }
   }
   //rocks
@@ -411,7 +411,7 @@ ctx.imageSmoothingEnabled=false;
     const r=rocks[i];
     const rx=r.x-cameraX;
     if(assetrock.complete){
-      ctx.drawImage(assetrock,rframe*16,0,16,16,rx-r.radius-2,r.y-r.radius-2,r.radius*2+4,r.radius*2+4);
+      ctx.drawImage(assetrock,rframe*16,0,16,16,rx-r.radius*1.3,r.y-r.radius*1.3,r.radius*2.6,r.radius*2.6);
   }
   }
   //dragon
@@ -454,15 +454,18 @@ ctx.imageSmoothingEnabled=false;
   }
   //ball
   const screenballx=ballX-cameraX;
-  const bframe=Math.floor(animtick/5)%7;
   if (assetball.complete){
-    ctx.drawImage(assetball,bframe*10,0,10,10,screenballx-ballRadius,ballY-ballRadius,ballRadius*2,ballRadius*2);
+    ctx.save();
+    ctx.translate(screenballx,ballY);
+    ctx.rotate(ballX/ballRadius);
+    ctx.drawImage(assetball,0,0,10,10,-ballRadius,-ballRadius,ballRadius*2,ballRadius*2);
+    ctx.restore();
   }
   //progress bar 
   const timeText=(gametimer/60).toFixed(1)+ "s";
 
   if (gamephase==="chase"){
-    ctx.fillStyle="#38bdf8"
+    ctx.fillStyle="#c084fc"
     ctx.font="bold 20px sans-serif";
     ctx.textAlign="left";
     ctx.fillText("CHASE",24,36);
@@ -470,7 +473,7 @@ ctx.imageSmoothingEnabled=false;
     const progress=Math.min(ballX/(bossArenaStart+250),1);
     ctx.fillStyle="#0f172a";
     ctx.fillRect(105,20,420,20);
-    ctx.fillStyle="#38bdf8";
+    ctx.fillStyle="#a855f7";
     ctx.fillRect(105,20,420*progress,20);
     ctx.strokeStyle="#94a3b8";
     ctx.lineWidth=2;
@@ -491,10 +494,11 @@ ctx.imageSmoothingEnabled=false;
       ctx.strokeRect(bx,18,32,24);
     }
     }
+  //timer
   ctx.fillStyle="#facc15";
-  ctx.font="bold 18px monospace";
+  ctx.font="bold 26px monospace";
   ctx.textAlign="right";
-  ctx.fillText(timeText,690,36);
+  ctx.fillText(timeText,690,39);
 
   if(!gamestarted){
     ctx.fillStyle="rgba(0,0,0,0.7)";
