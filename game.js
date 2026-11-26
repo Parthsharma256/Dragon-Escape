@@ -413,6 +413,50 @@ ctx.imageSmoothingEnabled=false;
       ctx.drawimage(assetrock,rframe*16,0,16,16,rx-r.radius-2,r.y-r.radius-2,r.radius*2+4,r.radius*2+4);
   }
   }
+  //dragon
+  const dx=dragon.x-cameraX;
+  const dragonframe=Math.floor(animtick/8)%4;
+  if (assetdragon.complete){
+    if (dragonflash>0)ctx.globalAlpha=0.4;
+   ctx.drawimage(assetdragon,dragonframe*16,0,16,16,dx,dragon.y,dragon.width,dragon.height);
+    ctx.globapAlph=1;
+  }
+  //fireball
+  const fframe=Math.floor(animtick/5)%4;
+  for (let i=0; i<fireballs.length;i++){
+  const f=fireballs[i];
+    const fx=f.x-cameraX;
+    if(assetfireball.complete){
+      ctx.save();
+      ctx.translate(fx,f.y);
+    if (f.speedX<0) ctx.scale(-1,1);
+    ctx.drawimage(assetfireball,fframe*40,0,40,18,-32,-16,64,32);
+   ctx.restore(); 
+  }
+  }
+  //orb
+  const oframe=Math.floor(animtrick/6)%5;
+  for(let i=0;i<orbs.lenght;i++){
+    const o=orbs[i];
+    const ox=o.x-cameraX;
+    if (assetorb.complete){
+      ctx.drawimage(assetorb,oframe*16,0,16,16,ox-o.radius-2,o.y-o.radius-2,o.raius*2+4,o.radius*2+4);
+    }
+    if (o.deflected){
+      ctx.beginPatg();
+     ctx.arc(ox,o.y,o.radius+3,0,Math.PI*2);
+      ctx.strokeStyle="#22c55e";
+      ctx.lineWidth=2;
+      ctx.stroke();
+      ctx.closePath();
+    }
+  }
+  //ball
+  const screenballx=ballX-cameraX;
+  const bframe=Math.floor(animtrick/5)%7;
+  if (assetball.complete){
+    ctx.drawimage(assetball,bframe*10,0,10,10,screenballx-ballRadius,ballY-ballRadius,ballRadius*2,ballRadius*2);
+  }
   //progress bar 
   const timeText=(gametimer/60).toFixed(1)+ "s";
 
