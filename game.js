@@ -45,6 +45,29 @@ let bosstimer=0;
 let orbtimer=0;
 let dragonflash=0;
 let gametimer=0;
+let sfx=null;
+
+function playaudio(startfreq,endfreq,duration,type) {
+  if (!sfx){
+    sfx=new(window.AudioContext||window.webkitAudioContext)();  
+  }
+  const osc=sfx.createOscillator();
+  const gain=sfx.createGain();
+  osc.type=type;
+  osc.frequency.setValueAtTime(startfreq,sfx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(endfreq,sfx.currentTime+duration);
+  gain.gain.setValueAtTime(0.15,sfx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01,sfx.currentTime+duration);
+  osc.connect(gain);
+  gain.connect(sfx.destination);
+  osc.start();
+  osc.stop(sfx.currentTime+duration);
+}
+function soundwin(){
+  playaudio(440,440,0.12,"square");
+  setTimeout(()=>playaudio(554,554,0.12,"square"),130);
+  setTimeout(()=>playaudio(659,880,0.25,"square"),260);
+}
 
 function createspike (){
   spikes=[];
@@ -103,6 +126,7 @@ function tryjump(){
   if (isOnGround){
     velocityY=jumpstrenght;
     isOnGround=false;
+    playaudio(220,520,0.12,"square");
   }
 }
 jump.addEventListener("pointerdown",tryjump);
@@ -134,6 +158,7 @@ window.addEventListener("keyup",(e)=>{
 function update(){
 if (!gamestarted||isgameover||win) return;
   gametimer++;
+  const wasdead=isgameover;
   if (moveleft) {
     ballX -=movespeed;
   }
@@ -301,6 +326,7 @@ for(let i=orbs.length-1; i>=0;i--){
     o.speedX=9.5;
     o.speedY=(dragon.y+dragon.height/2-o.y)*0.03;
     velocityY=-8;
+    playaudio(500,950,0.1,"triangle");
   }
   if (
     o.deflected&&
@@ -310,10 +336,12 @@ for(let i=orbs.length-1; i>=0;i--){
     o.y-o.radius<dragon.y+dragon.height
   ){
     bosshp--;
+    playaudio(180,60,0.15,"sawtooth");
     dragonflash=8;
     orbs.splice(i,1);
     if (bosshp<=0){
       win=true;
+      soundwin();
     }
     continue;
   }
@@ -322,6 +350,7 @@ for(let i=orbs.length-1; i>=0;i--){
   }
 }
 }
+  if(!wasdead&&isgameover) playaudio(300,80,0.35,"sawtooth");
 }
 
 function draw (){
