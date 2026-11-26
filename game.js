@@ -46,6 +46,21 @@ let orbtimer=0;
 let dragonflash=0;
 let gametimer=0;
 let sfx=null;
+function loadasset(src){
+  const asset= new Image();
+  asset.src=src;
+  return asset;
+}
+const assetbg=loadasset("assets/background.png");
+const assetwall=loadasset("assets/back-walls.png");
+const assettile=loadasset("assets/tiles.png");
+const assetball=loadasset("assets/ball.png");
+const assetdragon=loadasset("assets/dragon.png");
+const assetspike=loadasset("assets/spike.png");
+const assetrock=loadasset("assets/rock.png");
+const assetfireball=loadasset("assets/fireball.png");
+const assetorb=loadasset("assets/orb.png")
+let animtick=0;
 
 function playaudio(startfreq,endfreq,duration,type) {
   if (!sfx){
@@ -354,104 +369,50 @@ for(let i=orbs.length-1; i>=0;i--){
 }
 
 function draw (){
-  ctx.fillStyle="#161925";
+ctx.imageSmoothingEnabled=false;
+  //cave bg n walls
+  ctx.fillStyle="#161426";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  ctx.fillStyle="#23283d";
-  const pillarStart=-(cameraX%180);
-  for (let x=pillarStart;x<canvas.width; x+=180){
-    ctx.fillRect(x,ceilingY,45,floorY-ceilingY);
-  }
-
-  
-  //ceiling
-  ctx.fillStyle= "#4e3b31";
-  ctx.fillRect(0,0,canvas.width,ceilingY);
-  //floor
-  ctx.fillStyle="#4e3b31";
-  ctx.fillRect(0,floorY,canvas.width,canvas.height-floorY);
-  //tile
-const tilestart=-(cameraX%80);
- ctx.fillStyle="#8a6a55";
-  for (let x=tilestart;x<canvas.width;x+=80){
-    ctx.fillRect(x,floorY,50,10);
-  }
-  //spikes
-  ctx.fillStyle="#ef4444";
-  for (let i=0; i<spikes.length;i++){
-    const s=spikes[i];
-    const sx=s.x-cameraX;
-    if (sx+s.width>0&&sx<canvas.width){
-      ctx.beginPath();
-      ctx.moveTo(sx,floorY);
-      ctx.lineTo(sx+s.width/2,floorY-s.height);
-      ctx.lineTo(sx+s.width,floorY);
-      ctx.closePath();
-      ctx.fill();
+  if (assetbg.complete&&asset.width>0){
+    const bgstart= -((cameraX*0.25)%200);
+    for (let x=bgstart;x<canvas.width;x+=200){
+      ctx.drawimage(assetbg,x,ceilingY,200,floorY-ceilingY);
     }
   }
-  //falling rocks
-  ctx.fillStyle="#9ca3af";
-  for(let i=0; i<rocks.length;i++){
+  if (assetwall.complete&&assetwall.width>0){
+    const wallstart =-((cameraX*0.5)%533);
+    for (let x=wallstart;x<canvas.width;x+=533){
+    ctx.drawimage(assetwall,x,ceilingY,533,floorY-ceilingY); 
+    }
+  }
+  //cave ceiling n floor
+  ctx.fillStyle="#1a1222";
+  ctx.fillRect(0,0,canvas.width,ceilingY);
+  if (assettile.completr&&assettile.width>0){
+    for (let x=tilestart;x<canvas.widt;x+=240){
+    const tilestart= -(cameraX%240);
+    ctx.drawimage(assettile,144,80,192,20,x,ceilingY-8,240,25);
+    ctx.drawimage(assettile,144,144,192,32,x,floorY,240,40);
+    }
+  }
+  // spikes
+  for (let i=0; i<spikes.length; i++){
+    const s=spikes[i];
+    const sx=s.x-cameraX;
+    if (sx+s.width>0&&sx<canvas.width&&assetspike.complete){
+      ctx.drawimage(assetspike,sx-4,floorY-32,42,42);
+    }
+  }
+  //rocks
+  const rokframe=Math.floor(animtick/6)%4;
+  for (let i=0; i<rocks.length;i++){
     const r=rocks[i];
     const rx=r.x-cameraX;
-    ctx.beginPath();
-    ctx.arc(rx,r.y,r.radius,0,Math.PI*2);
-    ctx.fill();
-    ctx.closePath();
+    if(assetrock.complete){
+      ctx.drawimage(assetrock,rframe*16,0,16,16,rx-r.radius-2,r.y-r.radius-2,r.radius*2+4,r.radius*2+4);
   }
-  //dragon
-  const dx=dragon.x-cameraX;
-  //dragon wing
-  ctx.fillStyle="#7f1d1d";
-  ctx.beginPath();
-  ctx.moveTo(dx+20,dragon.y+20);
-  ctx.lineTo(dx-25,dragon.y-25);
-  ctx.lineTo(dx+60,dragon.y+10);
-  ctx.closePath();
-  ctx.fill();
-  //dragon body
-  ctx.fillStyle=dragonflash>0?"#ffffff":"#b91c1c";
-  ctx.fillRect(dx,dragon.y,dragon.width,dragon.height);
-  //eyes
-  ctx.fillStyle="#facc15";
-  ctx.fillRect(dx+dragon.width-28,dragon.y+18,12,12);
-  //fireball
-  for (let i=0;i<fireballs.length;i++){
-    const f=fireballs[i];
-    const fx=f.x-cameraX;
-    ctx.beginPath();
-    ctx.arc(fx,f.y,f.radius,0,Math.PI*2);
-    ctx.fillStyle="#f97316";
-    ctx.fill();
-    ctx.closePath();
-
-    ctx.beginPath();
-    ctx.arc(fx,f.y,f.radius*0.5,0,Math.PI*2)
-    ctx.fillStyle="#fde047";
-    ctx.fill();
-    ctx.closePath();
   }
-  //orbs
-  for (let i=0; i<orbs.length; i++){
-    const o=orbs[i];
-    const ox=o.x-cameraX;
-    ctx.beginPath();
-    ctx.arc(ox,o.y,o.radius,0,Math.PI*2);
-    ctx.fillStyle=o.deflected?"#22c55e":"#facc15";
-    ctx.fill();
-    ctx.strokeStyle="#ffffff";
-    ctx.lineWidth=2;
-    ctx.stroke();
-    ctx.closePath();
-  }
-  //ball 
-  const screenBallX=ballX-cameraX;
-  ctx.beginPath();
-  ctx.arc(screenBallX,ballY,ballRadius,0,Math.PI*2);
-  ctx.fillStyle="deepskyblue";
-  ctx.fill();
-  ctx.closePath();
   //progress bar 
   const timeText=(gametimer/60).toFixed(1)+ "s";
 
