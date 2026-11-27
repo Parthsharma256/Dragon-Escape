@@ -461,45 +461,78 @@ ctx.imageSmoothingEnabled=false;
     ctx.drawImage(assetball,0,0,10,10,-ballRadius,-ballRadius,ballRadius*2,ballRadius*2);
     ctx.restore();
   }
-  //progress bar 
-  const timeText=(gametimer/60).toFixed(1)+ "s";
-
-  if (gamephase==="chase"){
-    ctx.fillStyle="#c084fc"
-    ctx.font="bold 20px sans-serif";
+  //progress bar
+  const timeText=(gametimer/60).toFixed(1)+"s";
+  if (gamephase==="chase") {
+    ctx.font='bold 14px "Press Start 2P",monospace';
     ctx.textAlign="left";
-    ctx.fillText("CHASE",24,36);
+    ctx.fillStyle="#0b0814";
+    ctx.fillText("THE CHASE",22,38);
+    ctx.fillStyle="#d8b4fe";
+    ctx.fillText("THE CHASE",20,36);
 
     const progress=Math.min(ballX/(bossArenaStart+250),1);
-    ctx.fillStyle="#0f172a";
-    ctx.fillRect(105,20,420,20);
-    ctx.fillStyle="#a855f7";
-    ctx.fillRect(105,20,420*progress,20);
-    ctx.strokeStyle="#94a3b8";
-    ctx.lineWidth=2;
-    ctx.strokeRect(105,20,420,20);
-  }
-  else{
-    ctx.fillStyle="#ef4444";
-    ctx.font="bold 16px sans-serif";
-    ctx.textAlign="left";
-    ctx.fillText("BOSS HP",24,36);
+    const barW=390;
+    const fillW=Math.floor(barW*progress);
 
-    for (let i=0;i<10;i++){
-      const bx=115+i*40;
-      ctx.fillStyle=i<bosshp ? "#ef4444":"#1e293b";
-      ctx.fillRect(bx,18,32,24);
-      ctx.strokeStyle="#94a3b8";
+    ctx.fillStyle="#0b0814";
+    ctx.fillRect(116,16,barW+8,28);
+    ctx.fillStyle="#161126";
+    ctx.fillRect(120,20,barW,20);
+
+    if (fillW>0){
+      ctx.fillStyle="#9333ea";
+      ctx.fillRect(120,20,fillW,20);
+      ctx.fillStyle="#d8b4fe";
+      ctx.fillRect(120,20,fillW,5);
+    }
+    ctx.strokeStyle="#7e22ce";
+    ctx.lineWidth=2;
+    ctx.strokeRect(118,18,barW+4,24);
+  }
+  //boss fight bar
+  else{
+    ctx.font='bold 14px "Press Start 2P",monospace';
+    ctx.textAlign="left";
+    ctx.fillStyle="#0b0814";
+    ctx.fillText("BOSS",22,38);
+    ctx.fillStyle="#ef4444";
+    ctx.fillText("BOSS",20,36);
+    //boss hp bar
+    for (let i=0; i<10;i++){
+      const bx=110+i*40;
+      ctx.fillStyle="#0b0814";
+      ctx.fillRect(bx-2,16,34,28);
+      if (i<bosshp){
+        ctx.fillStyle="#dc2626";
+        ctx.fillRect(bx,18,30,24);
+        ctx.fillStyle="#f87171";
+        ctx.fillRect(bx,18,30,5);
+      }
+      else{
+        ctx.fillStyle="#1e1629";
+        ctx.fillRect(bx,18,30,24);
+      }
+      ctx.strokeStyle="#5a6082";
       ctx.lineWidth=2;
-      ctx.strokeRect(bx,18,32,24);
+      ctx.strokeRect(bx,18,30,24);
     }
-    }
+  }
   //timer
-  ctx.fillStyle="#facc15";
-  ctx.font="bold 26px monospace";
-  ctx.textAlign="right";
-  ctx.fillText(timeText,690,39);
-  
+  ctx.fillStyle="#0b0814";
+  ctx.fillRect(548,14,152,32);
+  ctx.fillStyle="#292c42";
+  ctx.fillRect(550,16,148,28);
+  ctx.strokeStyle="#5a6082";
+  ctx.lineWidth=2;
+  ctx.strokeRect(550,16,148,28);
+
+  ctx.font='bold 16px "Press Start 2P",monospace';
+  ctx.textAlign="center";
+  ctx.fillStyle="#0b0814";
+  ctx.fillText(timeText,626,38);
+  ctx.fillStyle="#ffe135";
+  ctx.fillText(timeText,624,36);
 //title screen
   const blink=Math.floor(animtick/28)%2===0;
 
