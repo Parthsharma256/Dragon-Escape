@@ -3,7 +3,7 @@ const ctx= canvas.getContext("2d");
 
 const floorY= 360;
 const ceilingY=60;
-const cavelength=5000;
+const cavelength=1500;
 let gamephase="chase";
 let cameraX=0;
 const bossArenaStart=cavelength-canvas.width;
@@ -499,42 +499,97 @@ ctx.imageSmoothingEnabled=false;
   ctx.font="bold 26px monospace";
   ctx.textAlign="right";
   ctx.fillText(timeText,690,39);
+  
+//title screen
+  const blink=Math.floor(animtick/28)%2===0;
 
-  if(!gamestarted){
-    ctx.fillStyle="rgba(0,0,0,0.7)";
+  if (!gamestarted){
+    ctx.fillStyle="rgba(10,8,20,0.78)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle="#161426";
+    ctx.fillRect(110,85,580,230);
+    ctx.strokeStyle="#c084fc";
+    ctx.lineWidth=4;
+    ctx.strokeRect(110,85,580,230);
+
+    ctx.textAlign="center";
+    ctx.font='32px "Press Start 2P",monospace';
+    ctx.fillStyle="#7c2d12";
+    ctx.fillText("DRAGON ESCAPE",canvas.width/2+4,159);
     ctx.fillStyle="#f97316";
-    ctx.font="bold 46px sans-serif";
-    ctx.textAlign="center";
-    ctx.fillText("DRAGON ESCAPE",canvas.width/2,canvas.height/2-20);
-    ctx.fillStyle="#ffffff";
-    ctx.font="20px sans-serif";
-    ctx.fillText("Tap the screen or ■ to start",canvas.width/2,canvas.height/2+25);
-  }
-  if (isgameover){
-    ctx.fillStyle="rgba(0,0,0,0.65)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="#ef4444";
-    ctx.font="bold 44px sans-serif";
-    ctx.textAlign="center";
-    ctx.fillText("GAME OVER",canvas.width/2,canvas.height/2-10);
-    ctx.fillStyle="#ffffff";
-    ctx.font="20px sans-serif";
-    ctx.fillText("Tap screen or ■ to retry",canvas.width/2,canvas.height/2+30);
-  }
-  if(win){
-    ctx.fillStyle="rgba(0,0,0,0.7)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="#22c55e";
-    ctx.font="bold 44px sans-serif";
-    ctx.textAlign="center";
-    ctx.fillText("VICTORY!",canvas.width/2,canvas.height/2-10);
-    ctx.fillStyle="#ffffff";
-    ctx.font="20px sans-serif";
-    ctx.fillText("You defeated the dragon! Tap to play again",canvas.width/2,canvas.height/2+30);
-  }
-}
+    ctx.fillText("DRAGON ESCAPE",canvas.width/2,155);
 
+   ctx.font='14px "Press Start 2P",monospace';
+    ctx.fillStyle="#d8b4fe";
+    ctx.fillText("You ran into a cave....it's the dragon's nest!",canvas.width/2,205);
+
+    if (blink){
+      ctx.font='14px "Press Start 2P",monospace';
+      ctx.fillStyle="#ffffff";
+      ctx.fillText("TAP SCREEN OR ■ TO START",canvas.width/2,270);
+    }
+  }
+//gameover screen
+  if (isgameover){
+    ctx.fillStyle="rgba(15,5,10,0.78)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle="#1f1018";
+    ctx.fillRect(140,90,520,220);
+    ctx.strokeStyle="#ef4444";
+    ctx.lineWidth=4;
+    ctx.strokeRect(140,90,520,220);
+
+    ctx.textAlign="center";
+    ctx.font='32px "Press Start 2P",monospace';
+    ctx.fillStyle="#7f1d1d";
+    ctx.fillText("GAME OVER",canvas.width/2+4,159);
+    ctx.fillStyle="#ef4444";
+    ctx.fillText("GAME OVER",canvas.width/2,155);
+
+    const pct=Math.floor(Math.min(ballX/(bossArenaStart+250),1)*100);
+    const stat=gamephase==="chase"? "PROGRESS: "+pct+"%| "+ timeText:"BOSS HP LEFT: "+ bosshp+"/10| " +timeText;
+    ctx.font='14px "Press Start 2P",monospace';
+    ctx.fillStyle="#facc15";
+    ctx.fillText(stat,canvas.width/2,205);
+
+    if (blink){
+      ctx.font='14px "Press Start 2P",monospace';
+      ctx.fillStyle="#ffffff";
+      ctx.fillText("TAP SCREEN OR ■ TO RETRY",canvas.width/2,265);
+    }
+  }
+
+  //win screen
+  if (win){
+    ctx.fillStyle="rgba(18,14,4,0.8)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle="#1c160a";
+    ctx.fillRect(120,85,560,230);
+    ctx.strokeStyle="#facc15";
+    ctx.lineWidth=4;
+    ctx.strokeRect(120,85,560,230);
+
+    ctx.textAlign="center";
+    ctx.font='bold 38px "Press Start 2P",monospace';
+    ctx.fillStyle="#141006";
+    ctx.fillText("VICTORY!",canvas.width/2+4,159);
+    ctx.fillStyle="#ffe135";
+    ctx.fillText("VICTORY!",canvas.width/2,155);
+
+    ctx.font='bold 15px "Press Start 2P",monospace';
+    ctx.fillStyle="#fde047";
+    ctx.fillText("ESCAPED IN "+timeText+"!",canvas.width/2,205);
+
+    if (blink){
+      ctx.font='bold 16px "Press Start 2P",monospace';
+      ctx.fillStyle="#ffffff";
+      ctx.fillText("TAP SCREEN OR ■ TO PLAY AGAIN",canvas.width/2,268);
+    }
+  }
+  }
 function gameLoop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   update();
