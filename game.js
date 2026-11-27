@@ -46,6 +46,8 @@ let orbtimer=0;
 let dragonflash=0;
 let gametimer=0;
 let sfx=null;
+let muted=false;
+let rolltimer=0;
 function loadasset(src){
   const asset= new Image();
   asset.src=src;
@@ -63,6 +65,7 @@ const assetorb=loadasset("assets/orb.png")
 let animtick=0;
 
 function playaudio(startfreq,endfreq,duration,type) {
+  if (muted) return;
   if (!sfx){
     sfx=new(window.AudioContext||window.webkitAudioContext)();  
   }
@@ -83,7 +86,24 @@ function soundwin(){
   setTimeout(()=>playaudio(554,554,0.12,"square"),130);
   setTimeout(()=>playaudio(659,880,0.25,"square"),260);
 }
-
+function dragonroar () {
+  playaudio(140,55,0.4,"sawtooth");
+  setTimeout(()=>playaudio(110,45,0.35,"sawtooth"),120);
+}
+function fireballsound(){
+  playaudio(420,140,0.14,"sawtooth");
+}
+function rocksound(){
+  playaudio(260,110,0.12,"triangle");
+}
+function orbsound(){
+  playaudio(880,1320,0.1,"sine");
+}
+function gameoversound(){
+  playaudio(300,220,0.15,"sawtooth");
+  setTimeout(()=>playaudio(210,150,0.15,"sawtooth"),160);
+  setTimeout(()=>playaudio(140,60,0.35,"sawtooth"),320);
+}
 function createspike (){
   spikes=[];
   let x=550;
@@ -161,6 +181,11 @@ fsbutton.addEventListener("pointerdown",()=>{
     document.exitFullscreen();
   }
 });
+const mutebutton=document.getElementById("mutebutton");
+mutebutton.addEventListener("pointerdown",()=> {
+  muted=!muted;
+  mutebutton.textContent=muted ? "OFF" : "ON";
+});
 window.addEventListener("keydown",(e)=>{
   if (e.code==="ArrowLeft") moveleft=true;
   if (e.code==="ArrowRight") moveright=true;
@@ -189,6 +214,7 @@ if (!gamestarted||isgameover||win) return;
   }
   if (gamephase==="chase"){
     cameraX=ballX-250;
+    dragonroar();
     if (cameraX<0) cameraX=0;
     if (cameraX>=bossArenaStart){
       cameraX=bossArenaStart;
@@ -207,6 +233,13 @@ if (!gamestarted||isgameover||win) return;
     ballY =floorY-ballRadius;
     velocityY= 0;
     isOnGround=true;
+  }
+  if (isOnGround&&(moveleft||moveright)){
+    rolltimer++;
+    if (rolltimer>=10){
+      rolltimer=0;
+      playaudio(95,75,0.04,"triangle");
+    }
   }
   if (ballY-ballRadius<ceilingY){
     ballY=ceilingY+ballRadius;
@@ -231,6 +264,7 @@ if (!gamestarted||isgameover||win) return;
         radius:30,
         speedY:4
       });
+      rocksound();
     }
   }
   for (let i=rocks.length-1;i>=0;i--){
@@ -247,6 +281,8 @@ if (!gamestarted||isgameover||win) return;
   if (gamephase==="chase"){
     if (dragondelay>0){
       dragondelay--;
+      if (dragondelay===0)
+        dragonroar();
     }
     else{
     dragon.x+=dragon.speed;
@@ -271,6 +307,7 @@ if (!gamestarted||isgameover||win) return;
       radius:12,
       speedX: 7.5
     });
+      fireballsound();
   }
     
 for (let i=fireballs.length-1; i>=0;i--){
@@ -308,6 +345,7 @@ for (let i=fireballs.length-1; i>=0;i--){
       radius:12,
       speedX:-6.5
     });
+    fireballsound();
   }
     orbtimer++;
     if (orbtimer>=130){
@@ -320,6 +358,7 @@ for (let i=fireballs.length-1; i>=0;i--){
   speedY:2.6,
     deflected:false
   })
+      orbsound();
     }
 for (let i=fireballs.length-1;i>=0;i--){
   const f=fireballs[i];
@@ -369,7 +408,7 @@ for(let i=orbs.length-1; i>=0;i--){
   }
   }
 }
-  if(!wasdead&&isgameover) playaudio(300,80,0.35,"sawtooth");
+  if(!wasdead&&isgameover) gameoversound();
 }
 
 

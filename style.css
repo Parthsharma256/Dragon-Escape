@@ -78,3 +78,20 @@ user-select:none;
   box-shadow:0 0 0 #1b1d2e;
   background: color #292c42;
 }
+#mutrbutton{
+position:fixed;
+top:12px;
+right:68px;
+width:48px;
+height:38px;
+font-family:"Press Start 2P",monospace;
+font-size:10px;
+font-weight:bold;
+  color:#ffe135;
+  background-color:#3a3e59;
+  border:3px solid #1b1d2e;
+  border-top-color:#5a6082;
+  border-radius:4px;
+  box-shadow:0 3px 0 #1b1d2e;
+  z-index:10;
+}
