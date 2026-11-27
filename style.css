@@ -35,27 +35,46 @@ body {
   gap:16px;
 }
 .movement_button{
-width:64px;
-height:64px;
-  font-size:24px;
-  color:white;
-  background-color:rgba(255, 255,255,0.2);
-  border:2px solid rgba(255,255,255,0.5);
-  border-radius:12px;
-  pointer-events:auto;
-  touch-action:none;
-  user-select:none;
+width:72px;
+height:72px;
+background-color:transparent;
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+border:none;
+image-rendering:pixelated;
+pointer-events:auto;
+touch-action:none;
+user-select:none;
 }
+#left{background-image:url("assets/btn_left.png");}
+#left:active{background-image:url("assets/btn_left_pressed.png");}
+
+#right{background-image: url("assets/btn_right.png");}
+#right:active{background-image:url("assets/btn_right_pressed.png");}
+
+#jump {background-image:url("assets/btn_up.png");}
+#jump:active{background-image:url("assets/btn_up_pressed.png");}
+
 #fsbutton{
   position:fixed;
   top:12px;
   right:16px;
-  width:40px;
-  height:40px;
-  font-size:20px;
-  color:white;
-  background-color:rgba(255,255,255,0.2);
-  border:2px solid rgba(255,255,255,0.5);
-  border-radius:8px;
+  width:44px;
+  height:38px;
+ font-family:"Press Start 2P",monospace;
+  font-size:11px;
+  font-weight:bold;
+  color:#e2e8f0;
+  background-color:#3a3e59;
+  border:3px solid #1b1d2e;
+  border-top-color:#5a6082;
+  border-radius:4px;
+  box-shadow:0 3px 0 #1b1d2e;
   z-index:10;
+}
+#fsbutton:active{
+  transform:translateY(3px);
+  box-shadow:0 0 0 #1b1d2e;
+  background: color #292c42;
 }
