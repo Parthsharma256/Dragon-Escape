@@ -338,11 +338,15 @@ for(let i=orbs.length-1; i>=0;i--){
 
   if(!o.deflected&&Math.hypot(ballX-o.x,ballY-o.y)<ballRadius+o.radius+4){
     o.deflected=true;
-    o.speedX=9.5;
-    o.speedY=(dragon.y+dragon.height/2-o.y)*0.03;
+    const dxhit=o.x-ballX;
+    const dyhit=o.y-ballY;
+    const len=Math.hypot(dxhit,dyhit)||1;
+    o.speedX=(dxhit/len)*10;
+    o.speedY=(dyhit/len)*10;
     velocityY=-8;
     playaudio(500,950,0.1,"triangle");
   }
+
   if (
     o.deflected&&
     o.x+o.radius>dragon.x&&
@@ -360,13 +364,14 @@ for(let i=orbs.length-1; i>=0;i--){
     }
     continue;
   }
-  if (o.y-o.radius>floorY||o.x>cavelength+50){
+  if (o.y-o.radius>floorY||o.y+o.radius<ceilingY||o.x>cavelength+50||o.x<bossArenaStart-50){
     orbs.splice(i,1);
   }
-}
+  }
 }
   if(!wasdead&&isgameover) playaudio(300,80,0.35,"sawtooth");
 }
+
 
 function draw (){
 ctx.imageSmoothingEnabled=false;
@@ -418,9 +423,12 @@ ctx.imageSmoothingEnabled=false;
   const dx=dragon.x-cameraX;
   const dragonframe=Math.floor(animtick/8)%4;
   if (assetdragon.complete){
-    if (dragonflash>0)ctx.globalAlpha=0.4;
-   ctx.drawImage(assetdragon,dragonframe*16,0,16,16,dx,dragon.y,dragon.width,dragon.height);
-    ctx.globalAlpha=1;
+    ctx.save();
+    if (dragonflash>0) ctx.globalAlpha=0.4;
+    ctx.translate(dx+dragon.width/2,dragon.y+dragon.height/2);
+    if (ballX<dragon.x+dragon.width/2) ctx.scale(-1,1);
+    ctx.drawImage(assetdragon,dragonframe*16,0,16,16,-dragon.width/2,-dragon.height/2,dragon.width,dragon.height);
+    ctx.restore();
   }
   //fireball
   const fframe=Math.floor(animtick/5)%4;
@@ -472,32 +480,32 @@ ctx.imageSmoothingEnabled=false;
     ctx.fillText("THE CHASE",20,36);
 
     const progress=Math.min(ballX/(bossArenaStart+250),1);
-    const barW=390;
+    const barW=350;
     const fillW=Math.floor(barW*progress);
 
     ctx.fillStyle="#0b0814";
-    ctx.fillRect(116,16,barW+8,28);
+    ctx.fillRect(160,16,barW+8,28);
     ctx.fillStyle="#161126";
-    ctx.fillRect(120,20,barW,20);
+    ctx.fillRect(164,20,barW,20);
 
     if (fillW>0){
       ctx.fillStyle="#9333ea";
-      ctx.fillRect(120,20,fillW,20);
+      ctx.fillRect(164,20,fillW,20);
       ctx.fillStyle="#d8b4fe";
-      ctx.fillRect(120,20,fillW,5);
+      ctx.fillRect(164,20,fillW,5);
     }
     ctx.strokeStyle="#7e22ce";
     ctx.lineWidth=2;
-    ctx.strokeRect(118,18,barW+4,24);
+    ctx.strokeRect(162,18,barW+4,24);
   }
   //boss fight bar
   else{
-    ctx.font='bold 14px "Press Start 2P",monospace';
+    ctx.font='bold 18px "Press Start 2P",monospace';
     ctx.textAlign="left";
     ctx.fillStyle="#0b0814";
-    ctx.fillText("BOSS",22,38);
+    ctx.fillText("DRAGON",22,38);
     ctx.fillStyle="#ef4444";
-    ctx.fillText("BOSS",20,36);
+    ctx.fillText("DRAGON",20,36);
     //boss hp bar
     for (let i=0; i<10;i++){
       const bx=110+i*40;
