@@ -88,7 +88,7 @@ function createspike (){
   spikes=[];
   let x=550;
   while (x<bossArenaStart-200){
-    spikes.push({x:x,width:50,height:34});
+    spikes.push({x:x,width:90,height:36});
     x+=260+Math.random()*180;
   }
 }
@@ -215,8 +215,8 @@ if (!gamestarted||isgameover||win) return;
   for (let i=0; i<spikes.length; i++){
     const s=spikes[i];
     if(
-      ballX+ballRadius-6>s.x &&
-      ballX-ballRadius+6<s.x+s.width &&
+      ballX+ballRadius-2>s.x &&
+      ballX-ballRadius+2<s.x+s.width &&
       ballY+ballRadius>floorY-s.height+6)
     {isgameover=true;
     } 
@@ -237,7 +237,7 @@ if (!gamestarted||isgameover||win) return;
     const r=rocks[i];
     r.y+=r.speedY;
     const dist = Math.hypot(ballX-r.x,ballY-r.y);
-    if(dist<ballRadius+r.radius-4){
+    if(dist<ballRadius+r.radius-14){
       isgameover=true;
     }
     if (r.y-r.radius>floorY) {
@@ -278,7 +278,7 @@ for (let i=fireballs.length-1; i>=0;i--){
   f.x+=f.speedX;
 
   const fdist=Math.hypot(ballX-f.x,ballY-f.y);
-  if (fdist<ballRadius+f.radius-3){
+  if (fdist<ballRadius+f.radius-8){
   isgameover=true;
   }
   if (f.x-cameraX>canvas.width+50){
@@ -324,7 +324,7 @@ for (let i=fireballs.length-1; i>=0;i--){
 for (let i=fireballs.length-1;i>=0;i--){
   const f=fireballs[i];
   f.x+=f.speedX;
-  if (Math.hypot(ballX-f.x,ballY-f.y)<ballRadius+f.radius-3){
+  if (Math.hypot(ballX-f.x,ballY-f.y)<ballRadius+f.radius-8){
     isgameover=true;
   }
   if(f.x<bossArenaStart-50){
@@ -402,7 +402,7 @@ ctx.imageSmoothingEnabled=false;
     const s=spikes[i];
     const sx=s.x-cameraX;
     if (sx+s.width>0&&sx<canvas.width&&assetspike.complete){
-      ctx.drawImage(assetspike,sx-6,floorY-52,100,100);
+      ctx.drawImage(assetspike,sx-5,floorY-52,100,100);
     }
   }
   //rocks
@@ -420,7 +420,7 @@ ctx.imageSmoothingEnabled=false;
   if (assetdragon.complete){
     if (dragonflash>0)ctx.globalAlpha=0.4;
    ctx.drawImage(assetdragon,dragonframe*16,0,16,16,dx,dragon.y,dragon.width,dragon.height);
-    ctx.globalAlphaAlpha=1;
+    ctx.globalAlpha=1;
   }
   //fireball
   const fframe=Math.floor(animtick/5)%4;
