@@ -214,11 +214,12 @@ if (!gamestarted||isgameover||win) return;
   }
   if (gamephase==="chase"){
     cameraX=ballX-250;
-    dragonroar();
+    
     if (cameraX<0) cameraX=0;
     if (cameraX>=bossArenaStart){
       cameraX=bossArenaStart;
       gamephase="boss";
+      dragonroar();
       dragon.x=cavelength-150;
       dragon.y=180;
       fireballs=[];
@@ -281,8 +282,6 @@ if (!gamestarted||isgameover||win) return;
   if (gamephase==="chase"){
     if (dragondelay>0){
       dragondelay--;
-      if (dragondelay===0)
-        dragonroar();
     }
     else{
     dragon.x+=dragon.speed;
@@ -382,7 +381,6 @@ for(let i=orbs.length-1; i>=0;i--){
     const len=Math.hypot(dxhit,dyhit)||1;
     o.speedX=(dxhit/len)*10;
     o.speedY=(dyhit/len)*10;
-    velocityY=-8;
     playaudio(500,950,0.1,"triangle");
   }
 
