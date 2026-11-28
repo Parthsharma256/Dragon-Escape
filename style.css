@@ -95,3 +95,8 @@ font-weight:bold;
   box-shadow:0 3px 0 #1b1d2e;
   z-index:10;
 }
+#mutebutton:active{
+  transform:translateY(3px);
+  box-shadow:0 0 0 #1b1d2e;
+  background-color:#292c42;
+}
