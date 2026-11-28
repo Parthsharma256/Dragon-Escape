@@ -3,7 +3,7 @@ const ctx= canvas.getContext("2d");
 
 const floorY= 360;
 const ceilingY=60;
-const cavelength=1500;
+const cavelength=5000;
 let gamephase="chase";
 let cameraX=0;
 const bossArenaStart=cavelength-canvas.width;
@@ -273,15 +273,15 @@ window.addEventListener("pointerdown",()=>{
   if (sfx.state==="suspended") sfx.resume();
 });
 window.addEventListener("keydown",(e)=>{
-  if (e.code==="ArrowLeft") moveleft=true;
-  if (e.code==="ArrowRight") moveright=true;
+  if (e.code==="ArrowLeft"||e.code==="KeyA") moveleft=true;
+  if (e.code==="ArrowRight"||e.code==="KeyD") moveright=true;
   if (e.code==="Space" || e.code==="ArrowUp") tryjump();
   if (!sfx) sfx=new(window.AudioContext||window.webkitAudioContext)();
   if (sfx.state==="suspended") sfx.resume();
 });
 window.addEventListener("keyup",(e)=>{
-  if (e.code==="ArrowLeft") moveleft=false;
-  if (e.code==="ArrowRight") moveright=false;
+  if (e.code==="ArrowLeft"||"KeyA") moveleft=false;
+  if (e.code==="ArrowRight"||"KeyD") moveright=false;
 });
 function update(){
 if (!gamestarted||isgameover||win) return;
