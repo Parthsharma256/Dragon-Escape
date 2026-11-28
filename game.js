@@ -164,10 +164,10 @@ function playmusic(freq,dur,type,vol){
 }
 
 function updatemusic(){
-  if (muted||!sfx||isgameover||win) return;
+  if (muted||!sfx||isgameover) return;
   bgmTime++;
   let lead,bass,speed,wave;
-  if (!gamestarted){
+  if (!gamestarted||win){
     lead=titlelead; bass=titlebass; speed=16; wave="triangle";
   }
   else if(gamephase==="chase"){
@@ -486,6 +486,8 @@ for(let i=orbs.length-1; i>=0;i--){
     if (bosshp<=0){
       win=true;
       soundwin();
+      bgmStep=0;
+      bgmTime=-25;
     }
     continue;
   }
