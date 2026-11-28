@@ -138,6 +138,52 @@ function gameoversound(){
   setTimeout(()=>playaudio(210,150,0.15,"sawtooth"),160);
   setTimeout(()=>playaudio(140,60,0.35,"sawtooth"),320);
 }
+let bgmStep=0;
+let bgmTime=0;
+const titlelead=[294,349,440,587,523,440,466,440];
+const titlebass=[147,147,110,110,117,117,110,110];
+
+const chaselead=[294,294,349,392,440,392,349,330,294,349,440,523,466,440,392,330];
+const chasebass=[147,110,147,110,175,131,196,110,147,110,175,131,117,175,110,110];
+
+const bosslead=[330,349,330,247,330,349,392,349,330,392,440,392,349,330,294,247];
+const bossbass=[165,165,123,123,165,165,175,165,165,165,110,110,196,175,165,123];
+
+function playmusic(freq,dur,type,vol){
+  if (muted||!sfx)return;
+  const osc=sfx.createOscillator();
+  const gain=sfx.createGain();
+  osc.type=type;
+  osc.frequency.setValueAtTime(freq,sfx.currentTime);
+  gain.gain.setValueAtTime(vol,sfx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.005,sfx.currentTime+dur);
+  osc.connect(gain);
+  gain.connect(sfx.destination);
+  osc.start();
+  osc.stop(sfx.currentTime+dur);
+}
+
+function updatemusic(){
+  if (muted||!sfx||isgameover||win) return;
+  bgmTime++;
+  let lead,bass,speed,wave;
+  if (!gamestarted){
+    lead=titlelead; bass=titlebass; speed=16; wave="triangle";
+  }
+  else if(gamephase==="chase"){
+    lead=chaselead;bass=chasebass; speed=9; wave="square"
+  }
+  else{
+    lead=bosslead; bass=bossbass; speed=8; wave="sawtooth";
+  }
+  if (bgmTime>=speed){
+    bgmTime=0;
+    const i=bgmStep%lead.length;
+    playmusic(lead[i],speed/60,wave,0.055);
+    playmusic(bass[i],speed/60,"triangle",0.07);
+    bgmStep++
+  }
+}
 function createspike (){
   spikes=[];
   let x=550;
@@ -186,6 +232,7 @@ right.addEventListener("pointercancel",()=>{moveright=false});
 function tryjump(){
   if(!gamestarted){
     gamestarted=true;
+    if (!sfx) sfx=new(window.AudioContext||window.webkitAudioContext)();
     return;
   }
   if (isgameover||win){
@@ -202,6 +249,7 @@ jump.addEventListener("pointerdown",tryjump);
 canvas.addEventListener("pointerdown",()=>{
   if(!gamestarted){
     gamestarted=true;
+    if (!sfx)sfx=new(window.AudioContext||window.webkitAudioContext)();
     return;
   }
   if (isgameover||win)resetgame();
@@ -220,10 +268,16 @@ mutebutton.addEventListener("pointerdown",()=> {
   muted=!muted;
   mutebutton.textContent=muted ? "OFF" : "ON";
 });
+window.addEventListener("pointerdown",()=>{
+  if (!sfx) sfx=new(window.AudioContext||window.webkitAudioContext)();
+  if (sfx.state==="suspended") sfx.resume();
+});
 window.addEventListener("keydown",(e)=>{
   if (e.code==="ArrowLeft") moveleft=true;
   if (e.code==="ArrowRight") moveright=true;
   if (e.code==="Space" || e.code==="ArrowUp") tryjump();
+  if (!sfx) sfx=new(window.AudioContext||window.webkitAudioContext)();
+  if (sfx.state==="suspended") sfx.resume();
 });
 window.addEventListener("keyup",(e)=>{
   if (e.code==="ArrowLeft") moveleft=false;
@@ -704,6 +758,7 @@ ctx.imageSmoothingEnabled=false;
   }
 function gameLoop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  updatemusic();
   update();
   draw();
   requestAnimationFrame(gameLoop);
