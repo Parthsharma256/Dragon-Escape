@@ -87,8 +87,42 @@ function soundwin(){
   setTimeout(()=>playaudio(659,880,0.25,"square"),260);
 }
 function dragonroar () {
-  playaudio(140,55,0.4,"sawtooth");
-  setTimeout(()=>playaudio(110,45,0.35,"sawtooth"),120);
+  if (muted) return;
+  if (!sfx){
+    sfx=new(window.AudioContext||window.webkitAudioContext)();
+  }
+  const now=sfx.currentTime;
+  [95,102].forEach((freq)=>{
+    const osc=sfx.createOscillator();
+    const g=sfx.createGain();
+    osc.type="sawtooth";
+    osc.frequency.setValueAtTime(freq,now);
+    osc.frequency.exponentialRampToValueAtTime(36,now+0.75);
+    g.gain.setValueAtTime(0.18,now);
+    g.gain.exponentialRampToValueAtTime(0.01,now+0.75);
+    osc.connect(g);
+    g.connect(sfx.destination);
+    osc.start(now);
+    osc.stop(now+0.75);
+  });
+const bufSize =sfx.sampleRate*0.75;
+  const buf=sfx.createBuffer(1,bufSize,sfx.sampleRate);
+  const data=buf.getChannelData(0);
+  for (let i=0; i<bufSize; i++) data[i]=Math.random()*2-1;
+  const noise=sfx.createBufferSource();
+  noise.buffer=buf;
+  const filter=sfx.createBiquadFilter();
+  filter.type="bandpass";
+  filter.frequency.setValueAtTime(700,now);
+  filter.frequency.exponentialRampToValueAtTime(160,now+0.75);
+  const ng=sfx.createGain();
+  ng.gain.setValueAtTime(0.35,now);
+  ng.gain.exponentialRampToValueAtTime(0.01,now+0.75);
+  noise.connect(filter);
+  filter.connect(ng);
+  ng.connect(sfx.destination);
+  noise.start(now);
+  
 }
 function fireballsound(){
   playaudio(420,140,0.14,"sawtooth");
